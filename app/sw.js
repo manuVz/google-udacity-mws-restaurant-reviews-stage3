@@ -8,22 +8,20 @@ self.addEventListener('install', event =>{
            '/',
            '/index.html',
            '/restaurant.html',
-           'css/styles.css',
-           'js/main.js',
-           'js/restaurant_info.js',
-           'js/dbhelper.js',
-           'js/sw_register.js',
-           'img/1-300_1x.jpg', 'img/1-500_1x.jpg', 'img/1-600_2x.jpg', 'img/1-800_2x.jpg',
-           'img/2-300_1x.jpg', 'img/2-500_1x.jpg', 'img/2-600_2x.jpg', 'img/2-800_2x.jpg',
-           'img/3-300_1x.jpg', 'img/3-500_1x.jpg', 'img/3-600_2x.jpg', 'img/3-800_2x.jpg',
-           'img/4-300_1x.jpg', 'img/4-500_1x.jpg', 'img/4-600_2x.jpg', 'img/4-800_2x.jpg',
-           'img/5-300_1x.jpg', 'img/5-500_1x.jpg', 'img/5-600_2x.jpg', 'img/5-800_2x.jpg',
-           'img/6-300_1x.jpg', 'img/6-500_1x.jpg', 'img/6-600_2x.jpg', 'img/6-800_2x.jpg',
-           'img/7-300_1x.jpg', 'img/7-500_1x.jpg', 'img/7-600_2x.jpg', 'img/7-800_2x.jpg',
-           'img/8-300_1x.jpg', 'img/8-500_1x.jpg', 'img/8-600_2x.jpg', 'img/8-800_2x.jpg',
-           'img/9-300_1x.jpg', 'img/9-500_1x.jpg', 'img/9-600_2x.jpg', 'img/9-800_2x.jpg',
-           'img/10-300_1x.jpg', 'img/10-500_1x.jpg', 'img/10-600_2x.jpg', 'img/10-800_2x.jpg'
-            
+           '/styles/styles.css',
+           '/scripts/main.js',
+           '/scripts/restaurant_info.js',
+           '/scripts/dbhelper.js',
+           '/scripts/sw_register.js',
+           '/images/1-300_1x.jpg', '/images/1-500_1x.jpg', '/images/1-600_2x.jpg', '/images/1-800_2x.jpg',
+           '/images/2-300_1x.jpg', '/images/2-500_1x.jpg', '/images/2-600_2x.jpg', '/images/2-800_2x.jpg',
+           '/images/3-300_1x.jpg', '/images/3-500_1x.jpg', '/images/3-600_2x.jpg', '/images/3-800_2x.jpg',
+           '/images/4-300_1x.jpg', '/images/4-500_1x.jpg', '/images/4-600_2x.jpg', '/images/4-800_2x.jpg',
+           '/images/5-300_1x.jpg', '/images/5-500_1x.jpg', '/images/5-600_2x.jpg', '/images/5-800_2x.jpg',
+           '/images/6-300_1x.jpg', '/images/6-500_1x.jpg', '/images/6-600_2x.jpg', '/images/6-800_2x.jpg',
+           '/images/7-300_1x.jpg', '/images/7-500_1x.jpg', '/images/7-600_2x.jpg', '/images/7-800_2x.jpg',
+           '/images/8-300_1x.jpg', '/images/8-500_1x.jpg', '/images/8-600_2x.jpg', '/images/8-800_2x.jpg',
+           '/images/no_image-300_1x.jpg', '/images/no_image-500_1x.jpg', '/images/no_image-600_2x.jpg', 'images/no_image-800_2x.jpg'      
         ]).catch( err =>{
             console.log(`Cache not open, error: ${err}`);
         });
