@@ -168,6 +168,9 @@ const createRestaurantHTML = (restaurant) => {
   
   //Insert the correct name of image for responsive image
   const img= DBHelper.imageUrlForRestaurant(restaurant);
+  if(!img){
+    const img = 'no-image';
+  }
   const ext = 'jpg';
   const img300 = `${img}-300_1x.${ext}`;
   const img500 = `${img}-500_1x.${ext}`;
