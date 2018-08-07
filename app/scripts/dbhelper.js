@@ -17,7 +17,8 @@ class DBHelper {
    * Fetch all restaurants.
    */
   static fetchRestaurants (callback){
-    fetch( 'http://localhost:1337/restaurants' ).then( response =>
+    let urlToFetch = DBHelper.DATABASE_URL;
+    fetch(urlToFetch, {method:'GET'}).then( response =>
           response.json())
           .then(restaurants =>{
             console.log(restaurants);
