@@ -3,6 +3,11 @@
     "name": "Restaurant reviews MWS stage 2 for Udacity",
     "icons": [
       {
+        "src": "/images/icon_reviews_512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      },
+      {
         "src": "/images/icon_reviews_256.png",
         "type": "image/png",
         "sizes": "256x256"
