@@ -1,7 +1,7 @@
 const cacheName = "restaurant-reviews-001";
 import idb from 'idb';
 
-
+//Promise For indexDB, create IndexDB and createObjectStore restaurants
     const promiseDb = idb.open ('restaurant-reviews', 1, upgradeDb =>{
         switch(upgradeDb.oldVersion){
         case 0: upgradeDb.createObjectStore('restaurants', 
@@ -40,69 +40,41 @@ self.addEventListener('install', event =>{
   );
 });
 
-/*const fetchStore = function (response){
-    const promise = new Promise (function(resolve,reject) {
-
-        //console.log(`Response data: ${response}`);
-        return (response && response.data || fetch(request)
-            .then (responsejson => { responsejson.json();})
-            .then(jsonFile => {
-                return promiseDb.then( db => {
-                    console.log('In responsejson');
-                    const tx = db.transaction('restaurants', 'readwrite');
-                    for (i in jsonFile ){
-                        tx.objectStore('restaurants').put(jsonFile[i]);
-                    }
-                })
-                return jsonFile;
-            })
-        );
-
-}); 
-return promise;
-}
-*/
-
 self.addEventListener('fetch', event =>{
     let request = event.request;
     const urlrequest = new URL(event.request.url);
     const urlpath = urlrequest.pathname;
+    //Divide request
     if((urlrequest.port === '1337') && (urlpath.indexOf('/restaurants')>-1)){
-        console.log(urlrequest.port);
+        
         toServer(event);
     }  
     else {
-        console.log(urlrequest.port);
+        
         NotServer (event);
     }
 });
 
 const toServer = event => {
-    console.log("to server");
-    console.log(event.request);
     event.respondWith(
+        //If in IndexDb get
         promiseDb.then (db =>{
             return db
             .transaction('restaurants', 'readonly')
             .objectStore('restaurants')
             .getAll();
         }).then(fetchOrget =>{
-            console.log(`Ecco event in fetchOrget ${event.request}`);
-            console.log(fetchOrget);
-            console.log(fetchOrget.length);
+            //If in database promise resolve or fetch
             return (fetchOrget) || fetch(event.request)
             .then(risposta =>{
-                console.log(`Dopo fetch in promise: ${risposta} `);
+                //Take json data in response object 
                 return risposta.json();
             }).then(data => {
-            console.log(`Questa è la risposta in json : ${data}`);
+                //Store Json in indexDB
                 return promiseDb.then( db => {
                 const tx = db.transaction('restaurants','readwrite');
                 const store = tx.objectStore('restaurants');
-                console.log(`Siamo in db per scriver json tipo dati: ${typeof(data)}`);
-                console.log(`Dati: ${data}`);
-                //let restaurants = JSON.parse (data);
-                //restaurants.forEach(restaurant =>{
+                
                 Array.prototype.forEach.call(data, restaurant =>{
                     store.put(restaurant);
                     console.log(`Restaurant: ${restaurant}`);
@@ -118,15 +90,13 @@ const toServer = event => {
                 console.log(`Errore in data: ${err}`);
                 })
     }).then(response => {
-        
-            console.log(`Il tipo di response : ${response}`);
-            console.log(response);
-            console.log(`Questo invece dovrebbe essere un value javascript ${JSON.stringify(response)}`);
+            //Build data json
             const dataJson = JSON.stringify(response);
             return new Response(dataJson);
-            //return response;
+            
          
     }).catch(err =>{
+        //If not fetch 
         return new Response("error in network response, failed to fetch",{status:500});
     })
     
