@@ -1,0 +1,20 @@
+{
+    "short_name": "R reviews",
+    "name": "Restaurant reviews MWS stage 2 for Udacity",
+    "icons": [
+      {
+        "src": "/images/icon_reviews_256.png",
+        "type": "image/png",
+        "sizes": "256x256"
+      },
+      {
+        "src": "/images/icon_reviews_128.png",
+        "type": "image/png",
+        "sizes": "128x128"
+      }
+    ],
+    "start_url": "index.html",
+    "background_color": "#618deb",
+    "display": "standalone",
+    "theme_color": "#618deb"
+  }
