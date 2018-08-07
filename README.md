@@ -1,10 +1,7 @@
 # Mobile Web Specialist Certification Course
 ---
-#### _Three Stage Course Material Project - Restaurant Reviews_
 
-## Project Stage 2
-
-## Instructions
+# Project Stage 2
 
 ### Start the API server
 
