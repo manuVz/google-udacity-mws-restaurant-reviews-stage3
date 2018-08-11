@@ -202,9 +202,20 @@ const createRestaurantHTML = (restaurant) => {
   address.innerHTML = restaurant.address;
   divtext.append(address);
   
+  const dvfavourite = document.createElement('div');
+  dvfavourite.className = 'restaurant-favourite';
+  li.append(dvfavourite);
+  
   const div = document.createElement('div');
   div.className ='restaurant-button';
   li.append(div);
+   
+  const btnfavourite = document.createElement ('button');
+  btnfavourite.innerHTML = 'favourite';
+  btnfavourite.setAttribute('aria-label','Press to get favourite');
+  btnfavourite.addEventListener ('click', () => {});
+  dvfavourite.append(btnfavourite);
+
   const more = document.createElement('button');
   more.innerHTML = 'View Details';
   more.setAttribute('aria-label',`View Details of ${restaurant.name} restaurant`);

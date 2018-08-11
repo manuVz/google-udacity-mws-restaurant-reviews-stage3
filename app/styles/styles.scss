@@ -230,6 +230,12 @@ nav h1 a {
   justify-content: center;
   align-items: center; }
 
+.restaurant-favourite {
+  color: black;
+  display: flex;
+  justify-content: right;
+}
+
 #restaurants-list li h1 {
   color: black;
   font-family: Arial,sans-serif;

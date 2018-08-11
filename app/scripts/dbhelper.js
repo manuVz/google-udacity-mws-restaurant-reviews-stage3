@@ -1,3 +1,4 @@
+import idb from 'idb';
 /**
  * Common database helper functions.
  */
@@ -13,14 +14,19 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
 
+  
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants (callback){
     let urlToFetch = DBHelper.DATABASE_URL;
-    fetch(urlToFetch, {method:'GET'}).then( response =>
-          response.json())
-          .then(restaurants =>{
+    console.log(`Url : ${urlToFetch}`);
+    fetch(urlToFetch, {method:'GET'}).then( response =>{
+      console.log(response.json);
+      return response.json();
+
+    }).then(restaurants =>{
+            if(restaurants.length)
             console.log(restaurants);
           callback (null, restaurants);
           
@@ -29,6 +35,42 @@ class DBHelper {
         callback(err, null);
     })
   }
+
+ /* static fetchRestaurants() {
+    return this.promiseDb()
+      .then(db => {
+        const tx = db.transaction('restaurants');
+        const restaurantStore = tx.objectStore('restaurants');
+        return restaurantStore.getAll();
+      })
+      .then(restaurants => {
+        if (restaurants.length !== 0) {
+          return Promise.resolve(restaurants);
+        }
+        return fetch(DBHelper.DATABASE_URL)
+            .then(risposta =>{
+                //Take json data in response object 
+                return risposta.json();
+            }).then(data => {
+                //Store Json in indexDB
+                return promiseDb.then( db => {
+                const tx = db.transaction('restaurants','readwrite');
+                const store = tx.objectStore('restaurants');
+                
+                Array.prototype.forEach.call(data, restaurant =>{
+                    store.put(restaurant);
+                    console.log(`Restaurant: ${restaurant}`);
+                })
+                    tx.complete;
+                    return data;
+                }).catch(err =>{
+                        console.log(`Errore in db: ${err}`); 
+                        console.log(`Data di tipo ${typeof(data)} in json ${data}`);
+                    })
+      })
+  }
+*/
+
   /*
   static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();

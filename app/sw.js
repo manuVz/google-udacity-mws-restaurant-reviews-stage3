@@ -6,7 +6,12 @@ import idb from 'idb';
         switch(upgradeDb.oldVersion){
         case 0: upgradeDb.createObjectStore('restaurants', 
             {keyPath:'id', autoIncrement: true }); 
+        case 1: 
+        const reviews = upgradeDb.createObjectStore('reviews',
+            {keyPath: 'id', autoIncrement: true});
+            reviews.createIndex('restaurant', 'restaurant_id');
         }
+        
     });
     
 

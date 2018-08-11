@@ -1,11 +1,13 @@
 // generated on 2018-08-05 using generator-webapp 3.0.1
 const gulp = require('gulp');
+const util = require('gulp-util');
 const gulpLoadPlugins = require('gulp-load-plugins');
 const browserify = require('browserify');
 const babelify = require ('babelify');
 const source = require ('vinyl-source-stream');
 const browserSync = require('browser-sync').create();
 const del = require('del');
+const concat = require ('gulp-concat');
 const wiredep = require('wiredep').stream;
 const runSequence = require('run-sequence');
 
@@ -37,6 +39,7 @@ gulp.task('scripts', () => {
     .pipe($.babel())
     .pipe($.if(dev, $.sourcemaps.write('.')))
     .pipe(gulp.dest('.tmp/scripts'))
+    .on('error',util.log)
     .pipe(reload({stream: true}));
 });
 
@@ -50,6 +53,7 @@ gulp.task('serviceWorker', () => {
         .bundle()
         .pipe(source("sw.js"))
         .pipe(gulp.dest(".tmp/"))
+        .on('error',util.log)
 });
 
 function lint(files) {
@@ -84,13 +88,15 @@ gulp.task('html', ['styles', 'scripts','serviceWorker'], () => {
       removeScriptTypeAttributes: true,
       removeStyleLinkTypeAttributes: true
     })))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('dist'))
+    .on('error',util.log);
 });
 
 gulp.task('images', () => {
   return gulp.src('app/images/**/*')
     .pipe($.cache($.imagemin()))
-    .pipe(gulp.dest('dist/images'));
+    .pipe(gulp.dest('dist/images'))
+    .on('error',util.log);
 });
 
 gulp.task('fonts', () => {
