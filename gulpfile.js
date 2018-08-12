@@ -55,7 +55,7 @@ gulp.task('serviceWorker', () => {
         .bundle()
         .pipe(source("sw.js"))
         .pipe(gulp.dest(".tmp/"))
-        .on('error',util.log)
+        .on('error',util.log);
 });
 
 function lint(files) {
