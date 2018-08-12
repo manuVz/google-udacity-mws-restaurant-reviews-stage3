@@ -1,18 +1,8 @@
 const cacheName = "restaurant-reviews-001";
-import idb from 'idb';
+
 
 //Promise For indexDB, create IndexDB and createObjectStore restaurants
-    const promiseDb = idb.open ('restaurant-reviews', 1, upgradeDb =>{
-        switch(upgradeDb.oldVersion){
-        case 0: upgradeDb.createObjectStore('restaurants', 
-            {keyPath:'id', autoIncrement: true }); 
-        case 1: 
-        const reviews = upgradeDb.createObjectStore('reviews',
-            {keyPath: 'id', autoIncrement: true});
-            reviews.createIndex('restaurant', 'restaurant_id');
-        }
-        
-    });
+    
     
 
 self.addEventListener('install', event =>{
@@ -52,7 +42,7 @@ self.addEventListener('fetch', event =>{
     //Divide request
     if((urlrequest.port === '1337') && (urlpath.indexOf('/restaurants')>-1)){
         
-        toServer(event);
+       // toServer(event);
     }  
     else {
         
@@ -60,7 +50,7 @@ self.addEventListener('fetch', event =>{
     }
 });
 
-const toServer = event => {
+/*const toServer = event => {
     event.respondWith(
         //If in IndexDb get
         promiseDb.then (db =>{
@@ -107,7 +97,7 @@ const toServer = event => {
     
 ); 
 }
-
+*/
 const NotServer = event =>{
     const request = event.request;
     event.respondWith(
