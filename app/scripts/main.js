@@ -8,11 +8,13 @@ var markers = []
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+  alert("Hello welcome to Restaurant Review");
   initMap();
   fetchNeighborhoods();
   fetchCuisines();
+  
 });
-
+//prova tecnica
 /**
  * Fetch all neighborhoods and set their HTML.
  */

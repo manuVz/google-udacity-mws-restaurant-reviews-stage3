@@ -18,6 +18,7 @@ const reload = browserSync.reload;
 let dev = true;
 
 gulp.task('styles', () => {
+  //console.log($.sourcemaps);
   return gulp.src('app/styles/*.scss')
     .pipe($.plumber())
     .pipe($.if(dev, $.sourcemaps.init()))
@@ -29,7 +30,7 @@ gulp.task('styles', () => {
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
     .pipe($.if(dev, $.sourcemaps.write()))
     .pipe(gulp.dest('.tmp/styles'))
-    .pipe(reload({stream: true}));
+    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('scripts', () => {
@@ -40,7 +41,8 @@ gulp.task('scripts', () => {
     .pipe($.if(dev, $.sourcemaps.write('.')))
     .pipe(gulp.dest('.tmp/scripts'))
     .on('error',util.log)
-    .pipe(reload({stream: true}));
+    .pipe(browserSync.reload({stream: true}))
+    .on('error',util.log);
 });
 
 gulp.task('serviceWorker', () => {
@@ -122,7 +124,7 @@ gulp.task('serve', () => {
       notify: false,
       port: 9000,
       server: {
-        baseDir: ['.tmp', 'app'],
+        baseDir: ['.tmp','app'],
         routes: {
           '/bower_components': 'bower_components'
         }
@@ -133,11 +135,11 @@ gulp.task('serve', () => {
       'app/*.html',
       'app/images/**/*',
       '.tmp/fonts/**/*'
-    ]).on('change', reload);
+          ]).on('change', reload);
 
-    gulp.watch('app/styles/**/*.scss', ['styles']);
+    gulp.watch("app/styles/**/*.scss", ["styles"]);
+    gulp.watch("app/scripts/**/*.js", ["scripts"]);
     gulp.watch('app/sw.js', ['serviceWorker']);
-    gulp.watch('app/scripts/**/*.js', ['scripts']);
     gulp.watch('app/fonts/**/*', ['fonts']);
     gulp.watch('bower.json', ['wiredep', 'fonts']);
   });
@@ -198,3 +200,7 @@ gulp.task('default', () => {
     runSequence(['clean', 'wiredep'], 'build', resolve);
   });
 });
+
+/*gulp.task('cache:clear', function (callback) {
+  return cache.clearAll(callback)
+  });*/
