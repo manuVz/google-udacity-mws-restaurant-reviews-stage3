@@ -60,7 +60,7 @@ gulp.task('serviceWorker', () => {
 
 function lint(files) {
   return gulp.src(files)
-    .pipe($.eslint({ fix: true }))
+    .pipe($.eslint({ fix: true, 'parserOptions':{'ecmaVersion': 6,'sourceType': 'module'} }))
     .pipe(reload({stream: true, once: true}))
     .pipe($.eslint.format())
     .pipe($.if(!browserSync.active, $.eslint.failAfterError()));

@@ -1,9 +1,21 @@
 const cacheName = "restaurant-reviews-001";
-
+import idb from 'idb';
 
 //Promise For indexDB, create IndexDB and createObjectStore restaurants
     
+function promiseDb () {
+    return idb.open ('restaurant-reviews', 1, upgradeDb =>{
+      switch(upgradeDb.oldVersion){
+      case 0: upgradeDb.createObjectStore('restaurants', 
+          {keyPath:'id', autoIncrement: true }); 
+      case 1: 
+      const reviews = upgradeDb.createObjectStore('reviews',
+          {keyPath: 'id', autoIncrement: true});
+          reviews.createIndex('restaurant', 'restaurant_id');
+      }
+   }); 
     
+  }
 
 self.addEventListener('install', event =>{
     event.waitUntil(caches.open(cacheName)
@@ -39,19 +51,33 @@ self.addEventListener('fetch', event =>{
     let request = event.request;
     const urlrequest = new URL(event.request.url);
     const urlpath = urlrequest.pathname;
+    console.log(urlrequest);
+    console.log(location.origin);
+    console.log(event.request.url.split(/[?#]/)[0]);
+   /*if(urlrequest.origin === location.origin){
+        console.log(urlrequest.origin);
+        if(urlrequest.pathname === '/'){
+            console.log('Origin');
+            return;
+        }
+        if(urlrequest.pathname.startsWith('/restaurants')){
+            event.respondWith(toServer(event.request));
+            return;
+        }
+    }*/
     //Divide request
-    if((urlrequest.port === '1337') && (urlpath.indexOf('/restaurants')>-1)){
-        
+    if((urlrequest.port === '1337') && (urlpath.startsWith('/restaurants'))){
+        console.log(`Verso Server ${urlrequest.port} e path: ${urlpath} `);
        // toServer(event);
+       return;
     }  
-    else {
-        
-        NotServer (event);
-    }
+    //else {
+        console.log(`Altro traffico con porta: ${urlrequest.port} e path: ${urlpath} `);
+        //event.respondWith(NotServer (event.request));
+    //}
 });
 
-/*const toServer = event => {
-    event.respondWith(
+function toServer (eventRequest) {
         //If in IndexDb get
         promiseDb.then (db =>{
             return db
@@ -60,7 +86,7 @@ self.addEventListener('fetch', event =>{
             .getAll();
         }).then(fetchOrget =>{
             //If in database promise resolve or fetch
-            return (fetchOrget) || fetch(event.request)
+            return fetchOrget || fetch(eventRequest)
             .then(risposta =>{
                 //Take json data in response object 
                 return risposta.json();
@@ -95,17 +121,15 @@ self.addEventListener('fetch', event =>{
         return new Response("error in network response, failed to fetch",{status:500});
     })
     
-); 
 }
-*/
-const NotServer = event =>{
+
+function NotServer (event){
     const request = event.request;
-    event.respondWith(
         caches.match(request)
         .then(response => {
             return response || fetch(request);
         }).catch(err =>{
             console.log(`Failed ${err}`);
         })
-    );
+    
 }

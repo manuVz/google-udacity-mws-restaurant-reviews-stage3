@@ -1,9 +1,9 @@
-
+//import idb from 'idb.js';
 /**
  * Common database helper functions.
  */
 class DBHelper {
-
+  
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -14,7 +14,7 @@ class DBHelper {
     return `http://localhost:${port}/restaurants`;
   }
  //prova test
- static promiseDb () {
+ /*  static promiseDb () {
   return idb.open ('restaurant-reviews', 1, upgradeDb =>{
     switch(upgradeDb.oldVersion){
     case 0: upgradeDb.createObjectStore('restaurants', 
@@ -26,11 +26,11 @@ class DBHelper {
     }
  }); 
   
-}
+}*/
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants (){
+  /*static fetchRestaurants (){
     return this.promiseDb ()
       .then(findINindexdb =>{
         const tx = findINindexdb.transaction('restaurants','readonly');
@@ -42,26 +42,28 @@ class DBHelper {
         }
         console.log('Altra funzione per recuperare ristoranti');
       })
-  }
+  }*/
 
-  /*static fetchRestaurants (callback){
+  static fetchRestaurants (){
     
     let urlToFetch = DBHelper.DATABASE_URL;
     console.log(`Url : ${urlToFetch}`);
-    fetch(urlToFetch, {method:'GET'}).then( response =>{
+    return fetch(urlToFetch, {method:'GET'}).then( response =>{
       console.log(response.json);
       return response.json();
 
     }).then(restaurants =>{
-            if(restaurants.length)
-            console.log(restaurants);
-          callback (null, restaurants);
+            if(restaurants.length){
+              console.log(restaurants);
+              return Promise.resolve( restaurants);
+            }
+            
           
     }).catch(error =>{
       const err = `Request failed. Returned status of ${error}`;
-        callback(err, null);
+        //callback(err, null);
     })
-  }*/
+  }
 
  /* static fetchRestaurants() {
     return this.promiseDb()
@@ -135,7 +137,7 @@ class DBHelper {
    */
   static fetchRestaurantByCuisine(cuisine) {
     // Fetch all restaurants  with proper error handling
-    DBHelper.fetchRestaurants()
+    return DBHelper.fetchRestaurants()
     .then(restaurants =>{
       restaurants.filter(r => r.cuisine_type == cuisine); 
     }).catch(error=>{
@@ -149,7 +151,7 @@ class DBHelper {
    */
   static fetchRestaurantByNeighborhood(neighborhood) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants()
+    return DBHelper.fetchRestaurants()
     .then(restaurants =>{
       restaurants.filter(r => r.neighborhood == neighborhood);
     }).catch(error => {
@@ -163,7 +165,7 @@ class DBHelper {
    */
   static fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood) {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants()
+    return DBHelper.fetchRestaurants()
     .then(restaurants => {
       let results = restaurants
       if (cuisine != 'all') { // filter by cuisine
@@ -184,8 +186,8 @@ class DBHelper {
    */
   static fetchNeighborhoods() {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants()
-    .then(restaurants =>{
+   return DBHelper.fetchRestaurants()
+   .then(restaurants =>{
         // Get all neighborhoods from all restaurants
         const neighborhoods = restaurants.map((v, i) => restaurants[i].neighborhood)
         // Remove duplicates from neighborhoods
@@ -202,7 +204,7 @@ class DBHelper {
    */
   static fetchCuisines() {
     // Fetch all restaurants
-    DBHelper.fetchRestaurants()
+    return DBHelper.fetchRestaurants()
     .then(restaurants => {
         // Get all cuisines from all restaurants
         const cuisines = restaurants.map((v, i) => restaurants[i].cuisine_type)
