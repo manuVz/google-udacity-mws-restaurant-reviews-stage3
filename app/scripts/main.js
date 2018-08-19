@@ -202,11 +202,37 @@ const createRestaurantHTML = (restaurant) => {
   const div = document.createElement('div');
   div.className ='restaurant-button';
   li.append(div);
-   
+  
+  console.log(restaurant.is_favorite);
   const btnfavourite = document.createElement ('button');
-  btnfavourite.innerHTML = 'favourite';
+  //btnfavourite.name = 'btnfavorite';
+  //const fav_image = document.createElement('i');
+  //fav_image.setAttribute('id','favorite');
+  btnfavourite.innerHTML = '';
+  btnfavourite.className = 'far fa-heart';
+
+  if((restaurant.is_favorite===true) || (restaurant.is_favorite ==="true")){
+    btnfavourite.setAttribute('style','color:red;font-weight:600');
+  }
+    
+
   btnfavourite.setAttribute('aria-label','Press to get favourite');
-  btnfavourite.addEventListener ('click', () => {});
+  
+  btnfavourite.addEventListener ('click', () => {
+    const favorite = !restaurant.is_favorite;
+        //console.log(`Dopo ${favorite}`); 
+        DBHelper.updatefavorite(restaurant.id,favorite);
+        setStylefavorite(btnfavourite,favorite); 
+        restaurant.is_favorite = favorite;
+        
+  });
+  
+  
+  //fav_image.className ='far fa-heart';
+  
+  //setClassfavorite('favorite', restaurant.is_favorite);
+  //btnfavourite.append(fav_image);
+  
   dvfavourite.append(btnfavourite);
 
   const more = document.createElement('button');
@@ -216,6 +242,25 @@ const createRestaurantHTML = (restaurant) => {
   div.append(more)
 
   return li
+}
+
+const setStylefavorite = (el, status) =>{
+  
+  console.log(el);
+
+    if(status){
+      //el.classList.add('red');
+      el.setAttribute('style','color:red;font-weight:600');
+      console.log(`Aggiunto red ${el.classList}`);
+      console.log('Change in checked');
+    }
+    else {
+      //el.classList.remove('red');
+      el.setAttribute('style','');
+      console.log(`Tolto red ${el.classList}`);
+      console.log('change in not checked');
+    }
+
 }
 
 /**

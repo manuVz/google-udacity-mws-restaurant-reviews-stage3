@@ -256,5 +256,11 @@ class DBHelper {
     );
     return marker;
   } */
+  static updatefavorite(id, status){
+    const urlDatabase = DBHelper.DATABASE_URL;
+    fetch(`${urlDatabase}/${id}/?is_favorite=${status}`, {method:'PUT'})
+      .then(() => { console.log(`Ristorante ${id} aggiornato su server con status ${status}`)
+    });
+  }
 
 }
