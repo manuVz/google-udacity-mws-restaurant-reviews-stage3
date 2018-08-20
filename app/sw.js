@@ -3,7 +3,7 @@ import idb from 'idb';
 
 //Promise For indexDB, create IndexDB and createObjectStore restaurants
     
-function promiseDb () {
+/*function promiseDb () {
     return idb.open ('restaurant-reviews', 1, upgradeDb =>{
       switch(upgradeDb.oldVersion){
       case 0: upgradeDb.createObjectStore('restaurants', 
@@ -15,7 +15,7 @@ function promiseDb () {
       }
    }); 
     
-  }
+  }*/
 
 self.addEventListener('install', event =>{
     event.waitUntil(caches.open(cacheName)
@@ -68,7 +68,7 @@ self.addEventListener('fetch', event =>{
     //Divide request
     if((urlrequest.port === '1337') && (urlpath.startsWith('/restaurants'))){
         console.log(`Verso Server ${urlrequest.port} e path: ${urlpath} `);
-       toServer(event);
+       //toServer(event);
        return;
     }  
     //else {

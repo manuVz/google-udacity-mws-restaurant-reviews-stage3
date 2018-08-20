@@ -1,4 +1,4 @@
-//import idb from 'idb.js';
+//import idb from 'idb';
 /**
  * Common database helper functions.
  */
@@ -43,7 +43,19 @@ class DBHelper {
         console.log('Altra funzione per recuperare ristoranti');
       })
   }*/
-
+  static promiseDb () {
+    return idb.open ('restaurant-reviews', 1, upgradeDb =>{
+      switch(upgradeDb.oldVersion){
+      case 0: upgradeDb.createObjectStore('restaurants', 
+          {keyPath:'id', autoIncrement: true }); 
+      case 1: 
+      const reviews = upgradeDb.createObjectStore('reviews',
+          {keyPath: 'id', autoIncrement: true});
+          reviews.createIndex('restaurant', 'restaurant_id');
+      }
+   }); 
+    
+  }
   static fetchRestaurants (){
     
     let urlToFetch = DBHelper.DATABASE_URL;
@@ -122,11 +134,10 @@ class DBHelper {
    */
   static fetchRestaurantById(id) {
     // fetch all restaurants with proper error handling.
-    return DBHelper.fetchRestaurants ()
+    return DBHelper.fetchRestaurants()
     .then( restaurants =>{
-        restaurants.find(r => r.id == id);
-      })
-    .catch(error =>{
+            return restaurants.find( r => r.id === id);
+      }).catch(error =>{
       console.log(`Restaurant does not exist ${error}`);
     });  
       

@@ -494,6 +494,15 @@ nav h1 a {
   }
 }
 
+#add-review {
+  min-height: 300px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+}
+/*#addReviewTitle {
+  color:
+}*/
 #restaurant-container, #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
@@ -527,7 +536,43 @@ nav h1 a {
   padding-bottom: 1pt;
   text-transform: uppercase;
 }
-
+//------------------------- REVIEWS FORM----------------------------------
+#add-review p {
+  //color: #82420D;
+  //font-size: 24pt;
+  font-size: 17pt;
+  font-weight: 300;
+  //letter-spacing: 5px;
+  padding-bottom: 1pt;
+  //text-transform: uppercase;
+  
+}
+form {
+  min-width:250px;
+}
+input, select, textarea {
+  margin-bottom:10px;
+  font-size: 11pt;
+  width:100%;
+}
+label {
+  font-size: 11pt;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#add-review button {
+  background-color: #82420d;
+  border-radius: 20px;
+  width: 100%;
+  color: #fff;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 11pt;
+  margin-bottom: 20px;
+  padding: 8px 30px 10px;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
 #reviews-list {
   margin: 0;
   padding: 0;
@@ -592,6 +637,12 @@ nav h1 a {
 }
 
 @media screen and (min-width: 750px) {
+  form{
+    min-width: 400px;
+  }
+  textarea {
+    min-height: 200px;
+  }
   .review-name {
     font-size: 15pt;
   }
@@ -607,6 +658,12 @@ nav h1 a {
 }
 
 @media screen and (min-width: 950px) {
+  form{
+    min-width: 550px;
+  }
+  textarea {
+    min-height: 300px;
+  }
   .review-name {
     font-size: 17pt;
   }

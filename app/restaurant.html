@@ -52,6 +52,28 @@
       </div>
     </section>
     <!-- end restaurant -->
+    <!-- Beginning add Review form  -->
+    <section id="add-review">
+      <p>Your Review</p>
+      <div id="">
+      <form action="sendReview()" method="post">
+        <label for="author">Your Name</label></br>
+        <input type="text" id="author" name="txtauthor"></input></br>
+        <label for="rating">Select Rating</label></br>
+        <select id="rating" name="cmbrating">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        </br>
+        <label for="comment">Your Comment</label></br>
+        <textarea type="text" id="comment "name="txtcomment" maxlength="2000"></textarea></br>
+        <button type="submit">Send Review</button>
+      </form>
+    </div>
+    </section>
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list" role="list" aria-label="resturant reviews"></ul>

@@ -211,7 +211,7 @@ const createRestaurantHTML = (restaurant) => {
   btnfavourite.innerHTML = '';
   btnfavourite.className = 'far fa-heart';
 
-  if((restaurant.is_favorite===true) || (restaurant.is_favorite ==="true")){
+  if((restaurant.is_favorite===true) || (restaurant.is_favorite ==='true')){
     btnfavourite.setAttribute('style','color:red;font-weight:600');
   }
     
