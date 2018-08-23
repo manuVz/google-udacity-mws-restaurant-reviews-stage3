@@ -142,6 +142,21 @@ class DBHelper {
     });  
       
   }
+  static fetchAllReviews(){
+    let databaseUrl = new URL(DBHelper.DATABASE_URL);
+    let reviewUrl = `${databaseUrl.origin}/reviews/`;
+    return fetch(reviewUrl)
+    .then(reviews => reviews.json())
+    .catch(err => console.log('No restaurant found'));
+  }
+
+  static fetchReviewsById(id){
+    let databaseUrl = new URL(DBHelper.DATABASE_URL);
+    let reviewUrl = `${databaseUrl.origin}/reviews/?restaurant_id=${id}`;
+    return fetch(reviewUrl)
+    .then(reviews => reviews.json())
+    .catch(err => console.log('No restaurant found'));
+  }
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.

@@ -6,6 +6,15 @@ var newMap;
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
+  /*let promises = [fetchRestaurantFromURL,fetchReviewsFromUrl];
+  Promise.all(promises)
+  .then((results) =>{
+    fillRestaurantHTML(results.restaurant);
+    
+    //fillReviewsHTML();
+  })
+
+*/
 });
 
 /**
@@ -63,10 +72,11 @@ const fetchRestaurantFromURL = () => {
     return Promise.resolve(self.restaurant);
   }
   const id = parseInt(getParameterByName('id'));
-  console.log(`FetchRestaurant ${id}`);
+  //console.log(`FetchRestaurant ${id}`);
   if (!id) { // no id found in URL
     return Promise.reject('No restaurant id in URL')
-  } else {
+  } 
+  else {
     return DBHelper.fetchRestaurantById(id)
     .then(restaurant => {
       console.log(`Restaurant: ${restaurant}`);
@@ -76,7 +86,30 @@ const fetchRestaurantFromURL = () => {
       self.restaurant = restaurant;
       fillRestaurantHTML();
       return restaurant;
-    });
+    })
+  }
+}
+
+const fetchReviewsFromUrl =() =>{
+  if (self.reviews) { // restaurant already fetched!
+    return Promise.resolve(self.reviews);
+  }
+  const id = parseInt(getParameterByName('id'));
+  //console.log(`FetchRestaurant ${id}`);
+  if (!id) { // no id found in URL
+    return Promise.reject('No restaurant id in URL')
+  } 
+  else {
+    return DBHelper.fetchReviewsById(id)
+    .then(reviews => {
+      console.log(`Restaurant: ${reviews}`);
+      if (!reviews) {
+        return Promise.resolve('Restaurant not found');
+      }
+      self.reviews = reviews;
+      return reviews;
+    })
+
   }
 }
 
@@ -109,7 +142,6 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   //Create srcset attribute
   image.srcset = `${srcset300},${srcset500},${srcset600},${srcset800}`;
   image.alt =`${restaurant.name}`;
-  
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -119,7 +151,11 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  fetchReviewsFromUrl()
+  .then( () => {
+    fillReviewsHTML();
+  })
+  
 }
 
 /**
@@ -147,7 +183,7 @@ const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hour
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -178,7 +214,8 @@ const createReviewHTML = (review) => {
 
   const date = document.createElement('p');
   date.className = 'review-date';
-  date.innerHTML = review.date;
+  const parseDate = new Date (review.createdAt); 
+  date.innerHTML = parseDate;
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -227,3 +264,7 @@ const getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
+
+//sendReview = () => {
+  //console.log(`Ecco il metodo sendReview`);
+  //}
