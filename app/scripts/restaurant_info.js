@@ -265,6 +265,13 @@ const getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-//sendReview = () => {
-  //console.log(`Ecco il metodo sendReview`);
-  //}
+sendReview = () => {
+  event.preventDefault();
+  let author = getParameterByName(txtauthor);
+  let rating = getParameterByName(cmbrating).value;
+  let comment = getParameterByName(txtcomment);
+
+  console.log(`Review:${author}, ${rating}, commento: ${comment}`);
+}
+
+

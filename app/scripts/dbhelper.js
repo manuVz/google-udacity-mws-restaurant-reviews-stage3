@@ -56,25 +56,43 @@ class DBHelper {
    }); 
     
   }
+   
   static fetchRestaurants (){
+    //Check in INDEXDB
+    return this.promiseDb ()
+    .then(db => {
+      console.log("In Index db");
+      const tx = db.transaction('restaurants');
+      const store = tx.objectStore('restaurants');
+      return store.getAll();
     
-    let urlToFetch = DBHelper.DATABASE_URL;
-    console.log(`Url : ${urlToFetch}`);
-    return fetch(urlToFetch, {method:'GET'}).then( response =>{
-      console.log(response.json);
-      return response.json();
+    }).then (restaurants =>{
+      console.log(`******restaurants e ${restaurants.length}`)
+      if(restaurants.length !==0)
+        return Promise.resolve(restaurants);
+      else {
+            let urlToFetch = DBHelper.DATABASE_URL;
+            console.log(`Url : ${urlToFetch}`);
+            return fetch(urlToFetch, {method:'GET'})
+            .then( response => response.json())
+            .then( restaurants => {
+              return this.promiseDb()
+              .then( db => {
+                const tx = db.transaction('restaurants','readwrite');
+                const store = tx.objectStore('restaurants');
 
-    }).then(restaurants =>{
-            if(restaurants.length){
-              console.log(restaurants);
-              return Promise.resolve( restaurants);
-            }
-            
-          
-    }).catch(error =>{
-      const err = `Request failed. Returned status of ${error}`;
-        //callback(err, null);
-    })
+                restaurants.forEach(restaurant => {
+                  store.put(restaurant);
+                });
+
+                return tx.complete.then(()=>Promise.resolve(restaurants));
+              })
+        
+            }).catch(error =>{
+                console.log(`Request failed. Returned status of ${error}`);
+              });
+          }
+      });
   }
 
  /* static fetchRestaurants() {
@@ -143,20 +161,101 @@ class DBHelper {
       
   }
   static fetchAllReviews(){
-    let databaseUrl = new URL(DBHelper.DATABASE_URL);
-    let reviewUrl = `${databaseUrl.origin}/reviews/`;
-    return fetch(reviewUrl)
-    .then(reviews => reviews.json())
-    .catch(err => console.log('No restaurant found'));
-  }
+    return this.promiseDb ()
+    .then(db => {
+      console.log("In Index db For Reviews");
+      const tx = db.transaction('reviews');
+      const store = tx.objectStore('reviews');
+      const indexReview = store.index('restaurant');
+      return indexReview.getAll();
+    }).then (reviews =>{
+      console.log(`******reviews e ${reviews.length}`)
+      if(reviews.length !==0)
+        return Promise.resolve(reviews);
+      else {
+            let databaseUrl = new URL(DBHelper.DATABASE_URL);
+            let reviewUrl = `${databaseUrl.origin}/reviews/`;
+            return fetch(reviewUrl)
+            .then(reviews => reviews.json())
+            .then( reviews => {
+              return this.promiseDb()
+              .then( db => {
+                const tx = db.transaction('reviews','readwrite');
+                const store = tx.objectStore('reviews');
+                //const indexReview = store.index('restaurant');
+                //return indexReview.openCursor();
+              //}).then ( cursor =>{
+                // if(!cursor) return;
+              //})
+                reviews.forEach(review => {
+                  store.put(review);
+                });
 
-  static fetchReviewsById(id){
+                return tx.complete.then(()=>Promise.resolve(reviews));
+              })
+        
+            }).catch(error =>{
+                console.log(`Request failed. Returned status of ${error}`);
+              });
+        }
+      })
+    }
+    static fetchReviewsById(id){
+      return this.promiseDb ()
+      .then(db => { 
+        //let key = IDBKeyRange.bound(['restaurant_id', 2]);
+        console.log("In Index db For Reviews");
+        const tx = db.transaction('reviews');
+        const store = tx.objectStore('reviews');
+        const indexReview = store.index('restaurant');
+        return indexReview.getAll(id);
+      }).then (reviews =>{
+        console.log(reviews);
+        //let filter = reviews.filter(r =>r.restaurant_id == id);
+        //console.log("Ecco " + filter );
+        console.log(`******reviews e ${reviews.length}`)
+        if(reviews.length !==0){
+          //let filter = reviews.filter(r =>r.restaurant_id == id);
+          //console.log(`reviews filtrate ${filter}`);
+          //if(filter)
+            return Promise.resolve(reviews);
+        
+          } 
+          else {
+            let databaseUrl = new URL(DBHelper.DATABASE_URL);
+            let reviewUrl = `${databaseUrl.origin}/reviews/?restaurant_id=${id}`;
+            return fetch(reviewUrl)
+            .then(reviews => reviews.json())
+              .then( reviews => {
+                return this.promiseDb()
+                .then( db => {
+                  const tx = db.transaction('reviews','readwrite');
+                  const store = tx.objectStore('reviews');
+                  //const indexReview = store.index('restaurant');
+                  //return indexReview.openCursor();
+                //}).then ( cursor =>{
+                  // if(!cursor) return;
+                //})
+                  reviews.forEach(review => {
+                    store.put(review);
+                  });
+  
+                  return tx.complete.then(()=>Promise.resolve(reviews));
+                })
+          
+              }).catch(error =>{
+                  console.log(`Request failed. Returned status of ${error}`);
+                });
+          }
+        })
+      }
+  /*static fetchReviewsById(id){
     let databaseUrl = new URL(DBHelper.DATABASE_URL);
     let reviewUrl = `${databaseUrl.origin}/reviews/?restaurant_id=${id}`;
     return fetch(reviewUrl)
     .then(reviews => reviews.json())
     .catch(err => console.log('No restaurant found'));
-  }
+  }*/
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
@@ -165,7 +264,7 @@ class DBHelper {
     // Fetch all restaurants  with proper error handling
     return DBHelper.fetchRestaurants()
     .then(restaurants =>{
-      restaurants.filter(r => r.cuisine_type == cuisine); 
+       restaurants.filter( r => r.cuisine_type == cuisine);
     }).catch(error=>{
       console.log(`No restaurant for cuisine type, ${error}`);
     });
@@ -286,6 +385,16 @@ class DBHelper {
     const urlDatabase = DBHelper.DATABASE_URL;
     fetch(`${urlDatabase}/${id}/?is_favorite=${status}`, {method:'PUT'})
       .then(() => { console.log(`Ristorante ${id} aggiornato su server con status ${status}`)
+      this.promiseDb()
+        .then(db =>{
+          const tx = db.transaction('restaurants','readwrite');
+          const store = tx.objectStore('restaurants');
+          store.get(id)
+          .then(restaurant =>{
+            restaurant.is_favorite = status;
+            store.put(restaurant);
+          });
+        })
     });
   }
 

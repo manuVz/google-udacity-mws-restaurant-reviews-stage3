@@ -211,19 +211,29 @@ const createRestaurantHTML = (restaurant) => {
   btnfavourite.innerHTML = '';
   btnfavourite.className = 'far fa-heart';
 
-  if((restaurant.is_favorite===true) || (restaurant.is_favorite ==='true')){
+  if((restaurant.is_favorite ==="true") || (restaurant.is_favorite==true)){
     btnfavourite.setAttribute('style','color:red;font-weight:600');
   }
-    
+  else {
+    btnfavourite.setAttribute('style','');
+  }
 
   btnfavourite.setAttribute('aria-label','Press to get favourite');
   
   btnfavourite.addEventListener ('click', () => {
-    const favorite = !restaurant.is_favorite;
-        //console.log(`Dopo ${favorite}`); 
-        DBHelper.updatefavorite(restaurant.id,favorite);
-        setStylefavorite(btnfavourite,favorite); 
-        restaurant.is_favorite = favorite;
+    console.log(restaurant.is_favorite);//false
+    let favorite = false;
+    if(restaurant.is_favorite ==="true" || restaurant.is_favorite==true)
+      favorite = false;
+      //console.log("Dopo " + favorite);
+    else {
+      favorite = true;
+    }
+    //const favorite = !restaurant.is_favorite; //true
+        console.log(`Dopo ${favorite}`); 
+        DBHelper.updatefavorite(restaurant.id,favorite); //true
+        setStylefavorite(btnfavourite,favorite); //true
+        restaurant.is_favorite = favorite; //true
         
   });
   
@@ -248,7 +258,7 @@ const setStylefavorite = (el, status) =>{
   
   console.log(el);
 
-    if(status){
+    if(status==true){
       //el.classList.add('red');
       el.setAttribute('style','color:red;font-weight:600');
       console.log(`Aggiunto red ${el.classList}`);

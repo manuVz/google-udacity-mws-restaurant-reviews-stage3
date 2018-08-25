@@ -29,6 +29,7 @@ self.addEventListener('install', event =>{
            '/scripts/main.js',
            '/scripts/restaurant_info.js',
            '/scripts/dbhelper.js',
+           '/scripts/module/idb.js',
            '/scripts/sw_register.js',
            '/images/1-300_1x.jpg', '/images/1-500_1x.jpg', '/images/1-600_2x.jpg', '/images/1-800_2x.jpg',
            '/images/2-300_1x.jpg', '/images/2-500_1x.jpg', '/images/2-600_2x.jpg', '/images/2-800_2x.jpg',
@@ -66,15 +67,34 @@ self.addEventListener('fetch', event =>{
         }
     }*/
     //Divide request
-    if((urlrequest.port === '1337') && (urlpath.startsWith('/restaurants'))){
+    //if((urlrequest.port === '1337') && (urlpath.startsWith('/restaurants'))){
+    if(urlrequest.port === '1337'){
         console.log(`Verso Server ${urlrequest.port} e path: ${urlpath} `);
        //toServer(event);
-       return;
+       if(urlpath.startsWith('/restaurants'))
+        return;
+       if(urlpath.startsWith('/review'))
+        return;
     }  
     //else {
         console.log(`Altro traffico con porta: ${urlrequest.port} e path: ${urlpath} `);
-        //event.respondWith(NotServer (event.request));
-    //}
+        //NotServer (event.request);
+        event.respondWith(
+            caches.match(event.request)
+            .then(response => {
+                if(response) return response
+                return caches.open(cacheName).then(cache =>{
+                    return fetch(event.request).then(network => {
+                        cache.put(event.request.url, network.clone());
+                        return network;
+                })
+                
+                })
+            }).catch(err =>{
+                console.log(`Failed ${err}`);
+            })
+        );
+    //event.respondWith(}
 });
 
 function toServer (eventRequest) {
@@ -124,12 +144,13 @@ function toServer (eventRequest) {
 }
 
 function NotServer (event){
-    const request = event.request;
-        caches.match(request)
+    event.respondWith(
+        caches.match(event.request)
         .then(response => {
-            return response || fetch(request);
+            return response || fetch(event.request);
         }).catch(err =>{
             console.log(`Failed ${err}`);
         })
+    );
     
 }
