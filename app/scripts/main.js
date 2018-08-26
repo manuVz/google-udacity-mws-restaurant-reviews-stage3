@@ -211,7 +211,7 @@ const createRestaurantHTML = (restaurant) => {
   btnfavourite.innerHTML = '';
   btnfavourite.className = 'far fa-heart';
 
-  if((restaurant.is_favorite ==="true") || (restaurant.is_favorite==true)){
+  if((restaurant.is_favorite ==='true') || (restaurant.is_favorite==true)){
     btnfavourite.setAttribute('style','color:red;font-weight:600');
   }
   else {
@@ -223,7 +223,7 @@ const createRestaurantHTML = (restaurant) => {
   btnfavourite.addEventListener ('click', () => {
     console.log(restaurant.is_favorite);//false
     let favorite = false;
-    if(restaurant.is_favorite ==="true" || restaurant.is_favorite==true)
+    if(restaurant.is_favorite ==='true' || restaurant.is_favorite==true)
       favorite = false;
       //console.log("Dopo " + favorite);
     else {

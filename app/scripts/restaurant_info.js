@@ -191,6 +191,7 @@ const fillReviewsHTML = (reviews = self.reviews) => {
 
   if (!reviews) {
     const noReviews = document.createElement('p');
+    noReviews.setAttribute('id','noReviews');
     noReviews.innerHTML = 'No reviews yet!';
     container.appendChild(noReviews);
     return;
@@ -239,6 +240,42 @@ const createReviewHTML = (review) => {
   return li;
 }
 
+let sendReview = () =>{
+  
+    event.preventDefault();
+    let restaurant = getParameterByName('id');
+    let author = document.getElementById('author').value;
+    let rating = document.getElementById('rating').value;
+    let comment = document.getElementById('comment').value;
+  
+    document.getElementById('submitReview').reset();
+
+    const newReview = {
+      restaurant_id: parseInt(restaurant),
+      name: author,
+      rating: parseInt(rating),
+      comments: comment,
+      createdAt: new Date() 
+    };
+    //Send POST to server
+    DBHelper.addreview(author,rating,comment);
+    //Create Review HTML
+    newReviewHTML(newReview);
+    //console.log(`Review:${author}, ${rating}, commento: ${comment}`);
+  
+}
+
+let newReviewHTML = (newReview) => {
+  //Check if no-review and remove
+  if(document.getElementById('noReviews')) 
+    document.getElementById('noReviews').remove();
+  
+  const reviewSection = document.getElementById('reviews-container');
+  const reviewList = document.getElementById('reviews-list');
+  //Insert new review first
+  reviewList.insertBefore(createReviewHTML(newReview),reviewList.firstChild);
+  reviewSection.appendChild(reviewList);
+}
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
@@ -248,6 +285,7 @@ const fillBreadcrumb = (restaurant=self.restaurant) => {
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 }
+
 
 /**
  * Get a parameter by name from page URL.
@@ -265,13 +303,10 @@ const getParameterByName = (name, url) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-sendReview = () => {
-  event.preventDefault();
-  let author = getParameterByName(txtauthor);
-  let rating = getParameterByName(cmbrating).value;
-  let comment = getParameterByName(txtcomment);
 
-  console.log(`Review:${author}, ${rating}, commento: ${comment}`);
-}
+
+
+
+
 
 

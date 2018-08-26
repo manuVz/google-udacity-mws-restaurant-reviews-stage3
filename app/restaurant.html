@@ -72,11 +72,8 @@
         </select>
         </br>
         <label for="comment">Your Comment</label></br>
-        <textarea type="text" id="comment "name="txtcomment" maxlength="2000" required ></textarea></br>
-        <button id="addReview" form="submitReview" formmethod="POST">Send Review</button>
-        <script>
-        document.getElementById("addReview").addEventListener('click', sendReview);
-        </script>
+        <textarea type="text" id="comment" name="txtcomment" maxlength="2000" required ></textarea></br>
+        <button id="addReview" form="submitReview" onclick="sendReview()">Send Review</button>
       </form>
     </div>
     </section>

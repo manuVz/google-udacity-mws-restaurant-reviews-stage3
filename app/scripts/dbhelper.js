@@ -61,7 +61,7 @@ class DBHelper {
     //Check in INDEXDB
     return this.promiseDb ()
     .then(db => {
-      console.log("In Index db");
+      console.log('In Index db');
       const tx = db.transaction('restaurants');
       const store = tx.objectStore('restaurants');
       return store.getAll();
@@ -163,7 +163,7 @@ class DBHelper {
   static fetchAllReviews(){
     return this.promiseDb ()
     .then(db => {
-      console.log("In Index db For Reviews");
+      console.log('In Index db For Reviews');
       const tx = db.transaction('reviews');
       const store = tx.objectStore('reviews');
       const indexReview = store.index('restaurant');
@@ -204,7 +204,7 @@ class DBHelper {
       return this.promiseDb ()
       .then(db => { 
         //let key = IDBKeyRange.bound(['restaurant_id', 2]);
-        console.log("In Index db For Reviews");
+        console.log('In Index db For Reviews');
         const tx = db.transaction('reviews');
         const store = tx.objectStore('reviews');
         const indexReview = store.index('restaurant');
@@ -396,6 +396,10 @@ class DBHelper {
           });
         })
     });
+  }
+
+  static addreview(author,review, comment){
+    console.log(`${author},${review}, ${comment}`);
   }
 
 }
