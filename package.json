@@ -32,7 +32,8 @@
     "main-bower-files": "^2.5.0",
     "run-sequence": "^1.2.2",
     "vinyl-source-stream": "^2.0.0",
-    "wiredep": "^4.0.0"
+    "wiredep": "^4.0.0",
+    "workbox-sw": "^3.4.1"
   },
   "eslintConfig": {
     "env": {
@@ -52,6 +53,7 @@
     "fresh": "^0.5.2",
     "hoek": "^5.0.3",
     "node-mime": "^1.0.0",
-    "parsejson": "0.0.3"
+    "parsejson": "0.0.3",
+    "workbox-background-sync": "^3.4.1"
   }
 }

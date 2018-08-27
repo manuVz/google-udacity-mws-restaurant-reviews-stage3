@@ -208,6 +208,8 @@ const fillReviewsHTML = (reviews = self.reviews) => {
  */
 const createReviewHTML = (review) => {
   const li = document.createElement('li');
+  if(!navigator.onLine)
+    li.setAttribute('id','offline-review');
   const name = document.createElement('p');
   name.className = 'review-name';
   name.innerHTML = review.name;
@@ -216,7 +218,14 @@ const createReviewHTML = (review) => {
   const date = document.createElement('p');
   date.className = 'review-date';
   const parseDate = new Date (review.createdAt); 
-  date.innerHTML = parseDate;
+  if(isNaN(parseDate)){
+    date.innerHTML = review.createdAt;
+    //console.log(`Data not timestamp ${review.createdAt}`);
+  }
+  else{
+    date.innerHTML = parseDate;
+    //console.log(`Data timestamp ${parseDate}`);
+  }
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -258,7 +267,7 @@ let sendReview = () =>{
       createdAt: new Date() 
     };
     //Send POST to server
-    DBHelper.addreview(author,rating,comment);
+    DBHelper.addreview(newReview);
     //Create Review HTML
     newReviewHTML(newReview);
     //console.log(`Review:${author}, ${rating}, commento: ${comment}`);

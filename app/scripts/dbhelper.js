@@ -61,18 +61,18 @@ class DBHelper {
     //Check in INDEXDB
     return this.promiseDb ()
     .then(db => {
-      console.log('In Index db');
+      //console.log('In Index db');
       const tx = db.transaction('restaurants');
       const store = tx.objectStore('restaurants');
       return store.getAll();
     
     }).then (restaurants =>{
-      console.log(`******restaurants e ${restaurants.length}`)
+      //console.log(`******restaurants e ${restaurants.length}`)
       if(restaurants.length !==0)
         return Promise.resolve(restaurants);
       else {
             let urlToFetch = DBHelper.DATABASE_URL;
-            console.log(`Url : ${urlToFetch}`);
+            //console.log(`Url : ${urlToFetch}`);
             return fetch(urlToFetch, {method:'GET'})
             .then( response => response.json())
             .then( restaurants => {
@@ -163,13 +163,13 @@ class DBHelper {
   static fetchAllReviews(){
     return this.promiseDb ()
     .then(db => {
-      console.log('In Index db For Reviews');
+      //console.log('In Index db For Reviews');
       const tx = db.transaction('reviews');
       const store = tx.objectStore('reviews');
       const indexReview = store.index('restaurant');
       return indexReview.getAll();
     }).then (reviews =>{
-      console.log(`******reviews e ${reviews.length}`)
+      //console.log(`******reviews e ${reviews.length}`)
       if(reviews.length !==0)
         return Promise.resolve(reviews);
       else {
@@ -204,24 +204,34 @@ class DBHelper {
       return this.promiseDb ()
       .then(db => { 
         //let key = IDBKeyRange.bound(['restaurant_id', 2]);
-        console.log('In Index db For Reviews');
+        //console.log('In Index db For Reviews');
         const tx = db.transaction('reviews');
         const store = tx.objectStore('reviews');
         const indexReview = store.index('restaurant');
         return indexReview.getAll(id);
       }).then (reviews =>{
-        console.log(reviews);
+        //console.log(reviews);
         //let filter = reviews.filter(r =>r.restaurant_id == id);
         //console.log("Ecco " + filter );
-        console.log(`******reviews e ${reviews.length}`)
-        if(reviews.length !==0){
+        //console.log(`******reviews e ${reviews.length}`);
+        let flag =0;
+        reviews.forEach(review =>{
+          if(!review.createdAt){
+            flag=1;
+            //console.log('Trovata data mancante interrompo ciclo e faccio refetch');
+            return;
+          }
+        })
+        if((reviews.length !==0) && (flag==0)){
           //let filter = reviews.filter(r =>r.restaurant_id == id);
           //console.log(`reviews filtrate ${filter}`);
           //if(filter)
+            
             return Promise.resolve(reviews);
         
           } 
           else {
+            
             let databaseUrl = new URL(DBHelper.DATABASE_URL);
             let reviewUrl = `${databaseUrl.origin}/reviews/?restaurant_id=${id}`;
             return fetch(reviewUrl)
@@ -398,8 +408,57 @@ class DBHelper {
     });
   }
 
-  static addreview(author,review, comment){
-    console.log(`${author},${review}, ${comment}`);
+  static addreview(newReview){
+    const database = new URL(DBHelper.DATABASE_URL);
+    let reviewToServer = {
+      'restaurant_id' : newReview.restaurant_id,
+      'name' : newReview.name,
+      'rating' : newReview.rating,
+      'comments' : newReview.comments
+    }
+
+    if(!navigator.onLine){
+      DBHelper.sendOffline(reviewToServer);
+      return;
+    }
+    let fetchrequest = {
+      method:'POST',
+      body: JSON.stringify(reviewToServer),
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    };
+    //console.log(`Oggetto: ${reviewToServer}`);
+    //console.log(`Richiesta a server ${fetchrequest}`);
+    this.promiseDb()
+    .then( db => {
+      const tx = db.transaction('reviews','readwrite');
+      const store = tx.objectStore('reviews');
+      store.put(reviewToServer);
+      //console.log('Scritto in index db');
+      return tx.complete.then(()=>Promise.resolve(db));
+    })
+    //let url = `${database.origin}/reviews`;
+
+    //fetchReviewToServer(url,fetchrequest,reviewToServer);
+    //const queue = new workbox.backgroundSync.Queue('RestaurantRq');
+    //console.log(`mi preparo ad inviare la richiesta a ${database.origin}/reviews`);
+    fetch(`${database.origin}/reviews`, fetchrequest).then( () =>{
+        console.log('Successfully update to Server');
+    })
+    .catch(workbox =>{
+    })
+    //console.log(`${author},${review}, ${comment}`);
+  }
+
+  static sendOffline (reviewoffline) {
+    localStorage.setItem('offline', JSON.stringify(reviewoffline))
+    window.addEventListener('online',(online)=>{
+      let review = JSON.parse(localStorage.getItem('offline'));
+      if(review !== null)
+        DBHelper.addreview(reviewoffline);
+      localStorage.removeItem('offline');
+    })
   }
 
 }

@@ -1,6 +1,6 @@
 const cacheName = "restaurant-reviews-001";
 import idb from 'idb';
-
+importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js');
 //Promise For indexDB, create IndexDB and createObjectStore restaurants
     
 /*function promiseDb () {
@@ -16,6 +16,37 @@ import idb from 'idb';
    }); 
     
   }*/
+  
+ //const port = 1337;
+
+/*  const showNotification = () => {
+    self.registration.showNotification('Background sync success!', {
+      body: '🎉`🎉`🎉`'
+    });
+  };
+  const queue = new workbox.backgroundSync.Queue('RestaurantRq');
+  */
+  /*const backGroundSync = new workbox.backgroundSync.Plugin(
+    'Restaurantqe',
+    {
+      callbacks: {
+        queueDidReplay: showNotification
+        // other types of callbacks could go here
+      }
+    }
+  );
+  //const backGroundSync = new workbox.backGroundSync.Plugin('Restaurant-review-queque');
+  const networkWithBackground = new workbox.strategies.NetworkOnly ({
+    plugins: [backGroundSync],
+  });
+  workbox.routing.registerRoute(
+    /\/api\/.*\/*.json/,
+    networkWithBackground,
+    'POST'
+  );*/
+  /*workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug);
+  if(workbox)
+   console.log("Workbox!")*/
 
 self.addEventListener('install', event =>{
     event.waitUntil(caches.open(cacheName)
@@ -52,9 +83,10 @@ self.addEventListener('fetch', event =>{
     let request = event.request;
     const urlrequest = new URL(event.request.url);
     const urlpath = urlrequest.pathname;
-    console.log(urlrequest);
-    console.log(location.origin);
-    console.log(event.request.url.split(/[?#]/)[0]);
+    //console.log(urlrequest);
+    //console.log(location.origin);
+    //console.log(event.request.url.split(/[?#]/)[0]);
+    //console.log(`AAAAAAAAAAAAAaa***************** ${event}`);
    /*if(urlrequest.origin === location.origin){
         console.log(urlrequest.origin);
         if(urlrequest.pathname === '/'){
@@ -73,8 +105,14 @@ self.addEventListener('fetch', event =>{
        //toServer(event);
        if(urlpath.startsWith('/restaurants'))
         return;
-       if(urlpath.startsWith('/review'))
+       if(urlpath.startsWith('/review')){
+        if (!navigator.onLine){
+            queue.addRequest(event.request);
+            console.log("Agggiunto a coda");
+        }
         return;
+       }
+        
     }  
     //else {
         console.log(`Altro traffico con porta: ${urlrequest.port} e path: ${urlpath} `);
