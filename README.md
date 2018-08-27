@@ -1,11 +1,11 @@
 # Mobile Web Specialist Certification Course
 ---
 
-# Project Stage 2
+# Project Stage 3
 
 ### Start the API server
 
-Clone the server repository: https://github.com/udacity/mws-restaurant-stage-2.git
+Clone the server repository: https://github.com/udacity/mws-restaurant-stage-3.git
 
 1. `npm install`
 2. `npm install sails -g`
