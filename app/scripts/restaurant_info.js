@@ -6,15 +6,7 @@ var newMap;
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
   initMap();
-  /*let promises = [fetchRestaurantFromURL,fetchReviewsFromUrl];
-  Promise.all(promises)
-  .then((results) =>{
-    fillRestaurantHTML(results.restaurant);
-    
-    //fillReviewsHTML();
-  })
-
-*/
+  
 });
 
 /**
@@ -126,7 +118,7 @@ const fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.className = 'restaurant-img';
 
   const img = DBHelper.imageUrlForRestaurant(restaurant);
-  //const img2 = img.split('.');
+  
   const ext = 'jpg'; 
   // Insert correct name of images in srcset attribute
   const img300 = `${img}-300_1x.${ext}`;
@@ -217,14 +209,14 @@ const createReviewHTML = (review) => {
 
   const date = document.createElement('p');
   date.className = 'review-date';
-  const parseDate = new Date (review.createdAt); 
+  const parseDate = new Date (review.createdAt);
+  //Server create date with no timestamp, review stored have timestamp, review from form no  
   if(isNaN(parseDate)){
     date.innerHTML = review.createdAt;
-    //console.log(`Data not timestamp ${review.createdAt}`);
+    
   }
   else{
     date.innerHTML = parseDate;
-    //console.log(`Data timestamp ${parseDate}`);
   }
   li.appendChild(date);
 

@@ -1,52 +1,6 @@
 const cacheName = "restaurant-reviews-001";
 import idb from 'idb';
-importScripts('https://storage.googleapis.com/workbox-cdn/releases/3.4.1/workbox-sw.js');
-//Promise For indexDB, create IndexDB and createObjectStore restaurants
-    
-/*function promiseDb () {
-    return idb.open ('restaurant-reviews', 1, upgradeDb =>{
-      switch(upgradeDb.oldVersion){
-      case 0: upgradeDb.createObjectStore('restaurants', 
-          {keyPath:'id', autoIncrement: true }); 
-      case 1: 
-      const reviews = upgradeDb.createObjectStore('reviews',
-          {keyPath: 'id', autoIncrement: true});
-          reviews.createIndex('restaurant', 'restaurant_id');
-      }
-   }); 
-    
-  }*/
-  
- //const port = 1337;
 
-/*  const showNotification = () => {
-    self.registration.showNotification('Background sync success!', {
-      body: '🎉`🎉`🎉`'
-    });
-  };
-  const queue = new workbox.backgroundSync.Queue('RestaurantRq');
-  */
-  /*const backGroundSync = new workbox.backgroundSync.Plugin(
-    'Restaurantqe',
-    {
-      callbacks: {
-        queueDidReplay: showNotification
-        // other types of callbacks could go here
-      }
-    }
-  );
-  //const backGroundSync = new workbox.backGroundSync.Plugin('Restaurant-review-queque');
-  const networkWithBackground = new workbox.strategies.NetworkOnly ({
-    plugins: [backGroundSync],
-  });
-  workbox.routing.registerRoute(
-    /\/api\/.*\/*.json/,
-    networkWithBackground,
-    'POST'
-  );*/
-  /*workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug);
-  if(workbox)
-   console.log("Workbox!")*/
 
 self.addEventListener('install', event =>{
     event.waitUntil(caches.open(cacheName)
@@ -83,40 +37,20 @@ self.addEventListener('fetch', event =>{
     let request = event.request;
     const urlrequest = new URL(event.request.url);
     const urlpath = urlrequest.pathname;
-    //console.log(urlrequest);
-    //console.log(location.origin);
-    //console.log(event.request.url.split(/[?#]/)[0]);
-    //console.log(`AAAAAAAAAAAAAaa***************** ${event}`);
-   /*if(urlrequest.origin === location.origin){
-        console.log(urlrequest.origin);
-        if(urlrequest.pathname === '/'){
-            console.log('Origin');
-            return;
-        }
-        if(urlrequest.pathname.startsWith('/restaurants')){
-            event.respondWith(toServer(event.request));
-            return;
-        }
-    }*/
+    
     //Divide request
-    //if((urlrequest.port === '1337') && (urlpath.startsWith('/restaurants'))){
+    
     if(urlrequest.port === '1337'){
         console.log(`Verso Server ${urlrequest.port} e path: ${urlpath} `);
-       //toServer(event);
+
        if(urlpath.startsWith('/restaurants'))
         return;
-       if(urlpath.startsWith('/review')){
-        if (!navigator.onLine){
-            queue.addRequest(event.request);
-            console.log("Agggiunto a coda");
-        }
+       if(urlpath.startsWith('/review'))
         return;
-       }
+       
         
     }  
-    //else {
         console.log(`Altro traffico con porta: ${urlrequest.port} e path: ${urlpath} `);
-        //NotServer (event.request);
         event.respondWith(
             caches.match(event.request)
             .then(response => {
@@ -132,63 +66,7 @@ self.addEventListener('fetch', event =>{
                 console.log(`Failed ${err}`);
             })
         );
-    //event.respondWith(}
 });
 
-function toServer (eventRequest) {
-        //If in IndexDb get
-        promiseDb.then (db =>{
-            return db
-            .transaction('restaurants', 'readonly')
-            .objectStore('restaurants')
-            .getAll();
-        }).then(fetchOrget =>{
-            //If in database promise resolve or fetch
-            return fetchOrget || fetch(eventRequest)
-            .then(risposta =>{
-                //Take json data in response object 
-                return risposta.json();
-            }).then(data => {
-                //Store Json in indexDB
-                return promiseDb.then( db => {
-                const tx = db.transaction('restaurants','readwrite');
-                const store = tx.objectStore('restaurants');
-                
-                Array.prototype.forEach.call(data, restaurant =>{
-                    store.put(restaurant);
-                    console.log(`Restaurant: ${restaurant}`);
-                })
-                    tx.complete;
-                    return data;
-                }).catch(err =>{
-                        console.log(`Errore in db: ${err}`); 
-                        console.log(`Data di tipo ${typeof(data)} in json ${data}`);
-                    })
 
-            }).catch(err =>{
-                console.log(`Errore in data: ${err}`);
-                })
-    }).then(response => {
-            //Build data json
-            const dataJson = JSON.stringify(response);
-            return new Response(dataJson);
-            
-         
-    }).catch(err =>{
-        //If not fetch 
-        return new Response("error in network response, failed to fetch",{status:500});
-    })
-    
-}
 
-function NotServer (event){
-    event.respondWith(
-        caches.match(event.request)
-        .then(response => {
-            return response || fetch(event.request);
-        }).catch(err =>{
-            console.log(`Failed ${err}`);
-        })
-    );
-    
-}

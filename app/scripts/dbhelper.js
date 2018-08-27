@@ -1,4 +1,3 @@
-//import idb from 'idb';
 /**
  * Common database helper functions.
  */
@@ -13,36 +12,8 @@ class DBHelper {
     //return `http://localhost:${port}/data/restaurants.json`;
     return `http://localhost:${port}/restaurants`;
   }
- //prova test
- /*  static promiseDb () {
-  return idb.open ('restaurant-reviews', 1, upgradeDb =>{
-    switch(upgradeDb.oldVersion){
-    case 0: upgradeDb.createObjectStore('restaurants', 
-        {keyPath:'id', autoIncrement: true }); 
-    case 1: 
-    const reviews = upgradeDb.createObjectStore('reviews',
-        {keyPath: 'id', autoIncrement: true});
-        reviews.createIndex('restaurant', 'restaurant_id');
-    }
- }); 
+ 
   
-}*/
-  /**
-   * Fetch all restaurants.
-   */
-  /*static fetchRestaurants (){
-    return this.promiseDb ()
-      .then(findINindexdb =>{
-        const tx = findINindexdb.transaction('restaurants','readonly');
-        const store = tx.objectStore('restaurants');
-        return store.getAll();
-      }).then(restaurants =>{
-        if(restaurants.length !==0){
-          return Promise.resolve(restaurants);
-        }
-        console.log('Altra funzione per recuperare ristoranti');
-      })
-  }*/
   static promiseDb () {
     return idb.open ('restaurant-reviews', 1, upgradeDb =>{
       switch(upgradeDb.oldVersion){
@@ -95,41 +66,7 @@ class DBHelper {
       });
   }
 
- /* static fetchRestaurants() {
-    return this.promiseDb()
-      .then(db => {
-        const tx = db.transaction('restaurants');
-        const restaurantStore = tx.objectStore('restaurants');
-        return restaurantStore.getAll();
-      })
-      .then(restaurants => {
-        if (restaurants.length !== 0) {
-          return Promise.resolve(restaurants);
-        }
-        return fetch(DBHelper.DATABASE_URL)
-            .then(risposta =>{
-                //Take json data in response object 
-                return risposta.json();
-            }).then(data => {
-                //Store Json in indexDB
-                return promiseDb.then( db => {
-                const tx = db.transaction('restaurants','readwrite');
-                const store = tx.objectStore('restaurants');
-                
-                Array.prototype.forEach.call(data, restaurant =>{
-                    store.put(restaurant);
-                    console.log(`Restaurant: ${restaurant}`);
-                })
-                    tx.complete;
-                    return data;
-                }).catch(err =>{
-                        console.log(`Errore in db: ${err}`); 
-                        console.log(`Data di tipo ${typeof(data)} in json ${data}`);
-                    })
-      })
-  }
-*/
-
+ 
   /*
   static fetchRestaurants(callback) {
     let xhr = new XMLHttpRequest();
@@ -182,11 +119,7 @@ class DBHelper {
               .then( db => {
                 const tx = db.transaction('reviews','readwrite');
                 const store = tx.objectStore('reviews');
-                //const indexReview = store.index('restaurant');
-                //return indexReview.openCursor();
-              //}).then ( cursor =>{
-                // if(!cursor) return;
-              //})
+              
                 reviews.forEach(review => {
                   store.put(review);
                 });
@@ -203,29 +136,21 @@ class DBHelper {
     static fetchReviewsById(id){
       return this.promiseDb ()
       .then(db => { 
-        //let key = IDBKeyRange.bound(['restaurant_id', 2]);
-        //console.log('In Index db For Reviews');
+        
         const tx = db.transaction('reviews');
         const store = tx.objectStore('reviews');
         const indexReview = store.index('restaurant');
         return indexReview.getAll(id);
       }).then (reviews =>{
-        //console.log(reviews);
-        //let filter = reviews.filter(r =>r.restaurant_id == id);
-        //console.log("Ecco " + filter );
-        //console.log(`******reviews e ${reviews.length}`);
+        //if No createdAt field fetch, when I store in Server -> no date, in indexdb I store the date. 
         let flag =0;
         reviews.forEach(review =>{
           if(!review.createdAt){
             flag=1;
-            //console.log('Trovata data mancante interrompo ciclo e faccio refetch');
             return;
           }
         })
         if((reviews.length !==0) && (flag==0)){
-          //let filter = reviews.filter(r =>r.restaurant_id == id);
-          //console.log(`reviews filtrate ${filter}`);
-          //if(filter)
             
             return Promise.resolve(reviews);
         
@@ -241,11 +166,7 @@ class DBHelper {
                 .then( db => {
                   const tx = db.transaction('reviews','readwrite');
                   const store = tx.objectStore('reviews');
-                  //const indexReview = store.index('restaurant');
-                  //return indexReview.openCursor();
-                //}).then ( cursor =>{
-                  // if(!cursor) return;
-                //})
+                  
                   reviews.forEach(review => {
                     store.put(review);
                   });
@@ -438,17 +359,14 @@ class DBHelper {
       //console.log('Scritto in index db');
       return tx.complete.then(()=>Promise.resolve(db));
     })
-    //let url = `${database.origin}/reviews`;
 
-    //fetchReviewToServer(url,fetchrequest,reviewToServer);
-    //const queue = new workbox.backgroundSync.Queue('RestaurantRq');
-    //console.log(`mi preparo ad inviare la richiesta a ${database.origin}/reviews`);
     fetch(`${database.origin}/reviews`, fetchrequest).then( () =>{
         console.log('Successfully update to Server');
     })
-    .catch(workbox =>{
+    .catch(err =>{
+      console.log(`Error ${err}`);
     })
-    //console.log(`${author},${review}, ${comment}`);
+    
   }
 
   static sendOffline (reviewoffline) {
